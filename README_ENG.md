@@ -1,6 +1,6 @@
 ﻿# YDWE
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ybeps6jwp0nupxu6?svg=true)](https://ci.appveyor.com/project/actboy168/YDWE)
+[![Build status](https://github.com/DeDf/YDWE/actions/workflows/build-release.yaml/badge.svg)](https://github.com/DeDf/YDWE/actions/workflows/build-release.yaml)
 
 Based on Warcraft III World Editor, YDWE is a tool used for making Warcraft III game maps. 
 

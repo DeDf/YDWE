@@ -1,6 +1,6 @@
 ﻿# YDWE
 
-[![Build status](https://github.com/OWNER/REPO/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/ci.yml)
+[![Build status](https://github.com/DeDf/YDWE/actions/workflows/build-release.yaml/badge.svg)](https://github.com/DeDf/YDWE/actions/workflows/build-release.yaml)
 
 YDWE是一个用于制作《魔兽争霸III》(英文名 Warcraft3，下面简称War3) 地图的工具，它是基于War3自带的WorldEdit进行二次开发。
 
