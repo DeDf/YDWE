@@ -1,4 +1,4 @@
-name: Build and Release YDWE (Win7 Compatible)
+name: Build and Release YDWE (Default Toolset)
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    # 使用 windows-2022，它预装了 v142/v143 工具集，且可能保留 v141
     runs-on: windows-2022
 
     steps:
@@ -20,16 +19,14 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # 关键步骤：尝试指定 v141 工具集来编译，以贴近 VS2017 的兼容性
-      # Build_Release.bat 内部若写死了 VS2017 路径，可能需要手动调整
+      # 尝试通过环境变量让 MSBuild 使用默认工具集 v143
+      # 如果 YDWE 项目文件里硬编码了 v141，这一步可能无效，需要进仓库搜索替换
       - name: Run Build Script
         shell: cmd
         run: |
+          set PlatformToolset=v143
           cd Build
           call Build_Release.bat
-        env:
-          # 尝试通过环境变量影响 MSBuild 的工具集选择（部分构建脚本会读取）
-          PlatformToolset: v141
 
       - name: Verify Build Output
         shell: cmd
