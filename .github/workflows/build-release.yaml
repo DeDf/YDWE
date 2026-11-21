@@ -1,0 +1,61 @@
+name: Build and Release YDWE (Win7 Compatible)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    # 使用 windows-2022，它预装了 v142/v143 工具集，且可能保留 v141
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # 关键步骤：尝试指定 v141 工具集来编译，以贴近 VS2017 的兼容性
+      # Build_Release.bat 内部若写死了 VS2017 路径，可能需要手动调整
+      - name: Run Build Script
+        shell: cmd
+        run: |
+          cd Build
+          call Build_Release.bat
+        env:
+          # 尝试通过环境变量影响 MSBuild 的工具集选择（部分构建脚本会读取）
+          PlatformToolset: v141
+
+      - name: Verify Build Output
+        shell: cmd
+        run: |
+          if not exist "Build\publish\Release\" (
+            echo "编译失败：未找到输出目录"
+            exit 1
+          )
+          dir "Build\publish\Release\"
+
+      - name: Package Release
+        shell: pwsh
+        run: |
+          Compress-Archive -Path "Build\publish\Release\*" -DestinationPath "YDWE-Release.zip" -Force
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: YDWE-Release-Build
+          path: YDWE-Release.zip
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: YDWE-Release.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
